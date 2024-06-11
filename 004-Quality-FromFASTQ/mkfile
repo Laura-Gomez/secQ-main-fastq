@@ -1,0 +1,10 @@
+<../config.mk
+
+results/%_fastqc.zip:	data/%.fastq.gz
+	DIR_RESULTS=$(dirname $target)
+	mkdir -p $DIR_RESULTS
+	/home/lgomez/miniconda3/bin/fastqc $prereq -o $DIR_RESULTS \
+		--adapters config/adapter_list.txt \
+		--limits config/limits.txt \
+		-contaminants config/contaminant_list.txt
+

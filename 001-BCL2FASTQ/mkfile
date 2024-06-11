@@ -1,0 +1,39 @@
+<../config.mk
+
+no-target:QV:
+    echo "$(pwd): nothing to be done."
+
+
+results/%.ok:	$SAMPLESHEET_DIR/%.csv	
+    set -x
+    TARGET_DIR=`echo $target | sed -e 's/.ok//g'`
+    if [ "$PLATFORM_SEQ"="NextSeq2000" ] 
+    then
+       mkdir -p $TARGET_DIR'.build/'
+       docker run --cpus $ncores --user="$(id -u):$(id -g)" \
+           -v "$SEQ_DATA_DIR":/input -v "${TARGET_DIR}'.build/":/output \
+           -v "$SAMPLESHEET_DIR":/data \
+           bcl-convert:4.2.4 --bcl-input-directory /input \
+           --output-directory /output -f \
+           --sample-sheet /data/SampleSheet.csv \
+           --bcl-sampleproject-subdirectories true \
+           --fastq-gzip-compression-level 5 \
+           --bcl-num-parallel-tiles 4 && touch $target
+    else
+        bcl2fastq --runfolder-dir $SEQ_DATA_DIR \
+                --output-dir $TARGET_DIR'.build/' \
+                --barcode-mismatches 1 \
+                --sample-sheet $prereq && touch $target
+    fi
+    mv $TARGET_DIR'.build' $TARGET_DIR
+    COL_SAMPLE=`WORD="Sample_Project"; grep $WORD $prereq | tr "," "\n" | grep -n $WORD | cut -d ":" -f 1`
+    sed -n '/Sample/,/*/p' $prereq \
+        | cut -d ',' -f $COL_SAMPLE \
+        | awk '!/Sample_Project|^$/' \
+        | uniq \
+	| tr -d '\r' > \
+            $TARGET_DIR'/projects.txt' \
+
+clean:V:
+    bin/targets | xargs rm -rf
+    rm -rf data/* results

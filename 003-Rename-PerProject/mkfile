@@ -1,0 +1,22 @@
+<../config.mk
+
+results/%-projects.txt: data/%/projects.txt
+	set -x
+	DIR_DATA='data/'
+	DIR_RESULTS='results/'
+	mkdir -p $DIR_RESULTS
+	samplesheet=$stem
+	echo $samplesheet
+	if [ -L $DIR_RESULTS$samplesheet'-projects.txt' ]; then
+		echo "MODULE DONE PREVIOULSY"
+	else
+		ln -sfn $DIR_DATA$samplesheet'/projects.txt' \
+			$DIR_RESULTS$samplesheet'-projects.txt'
+		for directory in $(cat $DIR_DATA$samplesheet'/projects.txt'); do
+			ls $DIR_DATA$samplesheet"/"$directory/*.fastq.gz > $DIR_RESULTS$samplesheet'-'$directory'.txt'
+			awk -v results="$DIR_RESULTS" -F "/" '{print "mv " $0 " " results $(NF-1) "_" $NF}'  $DIR_RESULTS$samplesheet'-'$directory.txt > $DIR_RESULTS$samplesheet'-'$directory.sh
+                	sh $DIR_RESULTS$samplesheet'-'$directory.sh
+		done
+	fi
+
+

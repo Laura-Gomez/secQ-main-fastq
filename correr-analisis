@@ -1,0 +1,43 @@
+#!/bin/bash
+
+###### ESTE SCRIPT EJECUTA TODOS LOS PASOS DEL PIPELINE DE ANALISIS DE CALIDAD DE LA USEC
+
+########################
+########################
+###### REQUISITOS PARA PODER EJECUTAR EL PIPELINE
+###### LECTURA Y EJECUCION EN /labs/usb/Usec-Q-Final
+###### ESCRITURA Y LECTURA EN /labs/usec
+
+###### LEER VARIABLES DE CONFIGURACION
+source /home/lgomez/secQ-main/config.mk
+
+######  CONFIGURAR EL PATH PARA QUE LOCALICE LOS COMANDOS mk y bcl2fastq
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/usr/local/bcl2fastq2-v2/bin/:/usr/local/plan9/bin
+export PATH
+echo $PATH
+
+###### CAMBIAR DIRECTORIO DE TRABAJO
+cd /home/lgomez/secQ-main
+
+echo "PATH=" $PATH
+
+###### LIMPIAR DIRECTORIO DE TRABAJO
+if [ $1 = "NEW-RUN" ]; then
+	/usr/local/bin/mk clean
+	rm -rf $RESULTS_DIR
+fi
+
+###### CREAR DIRECTORIO DE DEBUGEO
+mkdir -p $RESULTS_DIR'/DEBUG/'
+
+
+
+
+###### CORRER ANALISIS
+if [ $ANALYSIS_TYPE = "bcl" ]; then
+	mk init 001-BCL2FASTQ 002-FASTQ-Organize 003-Rename-PerProject 004-Quality 005a-Quality-AllRun 005b-Quality-PerLane 005c-Quality-PerProject 005d-Quality-PerSample 006-count-all 007-count-AllRun 008-count-PerSample RESULTADOS > $RESULTS_DIR'/DEBUG/mk.summary' 2>$RESULTS_DIR'/DEBUG/mk.error'
+else
+	mk init-FASTQ 000-cp-FromFASTQ 004-Quality-FromFASTQ 005a-Quality-AllRun-FromFASTQ 005d-Quality-PerSample-FromFASTQ 006-count-all-FromFASTQ 007-count-AllRun-FromFASTQ 008-count-PerSample-FromFASTQ RESULTADOS-FASTQ > $RESULTS_DIR'/DEBUG/mk.summary' 2>$RESULTS_DIR'/DEBUG/mk.error'
+fi
+
+

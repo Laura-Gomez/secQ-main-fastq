@@ -1,0 +1,18 @@
+<../config.mk
+
+<|bin/prereqs
+results/%_report.html:
+	set -x
+	TARGET_DIR=`dirname $target`
+	mkdir -p $TARGET_DIR
+	bin/which-fastqc-belong-project $stem > $TARGET_DIR'/'${stem}_list.txt
+	/home/lgomez/miniconda3/bin/multiqc \
+		--outdir $TARGET_DIR \
+		--filename ${stem}_report.build.html \
+		--file-list $TARGET_DIR'/'${stem}_list.txt \
+	&& mv $TARGET_DIR'/'${stem}_report.build.html $TARGET_DIR'/'${stem}_report.html
+
+
+clean:V:
+        bin/targets | xargs rm -rf
+        rm -rf results/

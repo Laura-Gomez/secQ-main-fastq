@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source ../config.mk
+
+##RESULTS=$PIPELINE_DIR'005c-Quality-PerProject/results/'
+ls data/ \
+	| cut -f1 -d "_" \
+	| uniq \
+	| sed -e 's/$/_report.html/' -e 's/^/results\//'

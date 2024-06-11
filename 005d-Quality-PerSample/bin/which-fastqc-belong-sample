@@ -1,0 +1,8 @@
+#!/bin/bash
+source ../config.mk
+
+array=($(echo $1 | awk '{split($0,cmd_array,"_")} END {for(n in cmd_array){ print cmd_array[n] }}'))
+find -L 'data/' \
+	-type f \
+	-name ${array[0]}'_'${array[1]}'_*fastqc.zip'
+

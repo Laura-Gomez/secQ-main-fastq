@@ -1,0 +1,8 @@
+#!/bin/bash
+source ../config.mk
+
+RESULTS='results/'
+ls 'data/' \
+	| awk  -F "_" '{print $1}' \
+	| sort | uniq \
+	| sed -e "s|^|$RESULTS|" -e 's/$/.count/'

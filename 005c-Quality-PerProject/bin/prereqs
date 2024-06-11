@@ -1,0 +1,8 @@
+#!/bin/bash
+
+source ../config.mk
+
+# Set up a dynamic mkfile for correctly updating merge targets.
+
+bin/projects \
+| xargs -I @ sh -c 'echo "results/@_report.html:	$(bin/which-fastqc-belong-project @ | tr "\n" "\t" )"'

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+source ../config.mk
+
+##### CREATE RESULTS DIRECTORY
+##### THIS IS NECESSARY TO CREATE THE SYMBOLIC LINKS IN THE MKFILE
+mkdir -p 'results'
+
+##### ONLY RUN MK IF THERE IS ANY TARGET TO MAKE
+##### OTHERWISE MK WILL FAIL: ERROR "NOTHING TO MAKE"
+TARGETS=$(bin/targets)
+#echo $TARGETS
+if ! [ -z "$TARGETS" ]; then
+	bin/targets | xargs env NPROC=$1 mk
+fi

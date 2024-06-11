@@ -1,0 +1,50 @@
+#!/bin/bash
+
+source ./config.mk
+
+#RESULTS_DIR=$RESULTS_DIR'/'
+echo "$RESULTS_DIR"
+
+mkdir -p $RESULTS_DIR
+mkdir -p $RESULTS_DIR'FASTQ'
+mkdir -p $RESULTS_DIR'CALIDAD'
+mkdir -p $RESULTS_DIR'CALIDAD/PER-RUN'
+mkdir -p $RESULTS_DIR'CALIDAD/PER-LANE'
+mkdir -p $RESULTS_DIR'CALIDAD/PER-PROJECT'
+mkdir -p $RESULTS_DIR'CALIDAD/PER-SAMPLE'
+mkdir -p $RESULTS_DIR'CUENTAS'
+
+####### MOVER RESULTADOS CALIDAD
+cp '005a-Quality-AllRun/results/'*'.html' $RESULTS_DIR'CALIDAD/PER-RUN/'
+cp '005b-Quality-PerLane/results/'*'.html' $RESULTS_DIR'CALIDAD/PER-LANE/'
+cp '005c-Quality-PerProject/results/'*'.html' $RESULTS_DIR'CALIDAD/PER-PROJECT/'
+cp '005d-Quality-PerSample/results/'*'.html' $RESULTS_DIR'CALIDAD/PER-SAMPLE/'
+
+
+####### MOVER FASTQ
+#mv '003-Rename-PerProject/results/*fastq.gz' $RESULTS_DIR'FASTQ/'
+FASTQ_DIR='003-Rename-PerProject/results/'
+FASTQ_DIR_RES=$RESULTS_DIR'FASTQ/'
+PROJECTS=$(ls $FASTQ_DIR*'.fastq.gz' | awk -F "/" '{print $NF}' | awk -F "_" '{ print $1 }' | uniq)
+for pr in $PROJECTS
+do
+        echo $pr
+        mkdir -p $FASTQ_DIR_RES$pr
+        #mv $FASTQ_DIR$pr* $FASTQ_DIR_RES$pr
+        mv $FASTQ_DIR$pr*'.fastq.gz' $FASTQ_DIR_RES$pr
+done
+
+
+####### MOVER CUENTAS DNA-SEQ
+
+## CUENTAS DE SECUENCIAS ALINEADAS
+## UTILIZAR EL NOMBRE DE LOS ARCHIVOS PARA JALAR LA CUENTA TOTAL DE CADA MUESTRA
+## UTILIZAR EL NOMBRE DE LOS ARCHIVOS PARA JALAR LA CUENTA EN CADA INTERVALO
+for filename in $( ls '008-count-PerSample/results/' )
+do
+	SAMPLE=$(echo "$filename" | tr '\n' '\t' | tr -d ".count")
+	COUNT=$(cat '008-count-PerSample/results/'${filename} | tr -d '\n')       
+	echo -e $SAMPLE '\t' $COUNT >> $RESULTS_DIR'CUENTAS/cuentas-totales.txt'
+done;
+
+

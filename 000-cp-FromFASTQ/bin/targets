@@ -1,0 +1,4 @@
+#!/bin/bash
+source ../config.mk
+
+echo results/${RUN}.ok

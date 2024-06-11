@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source ../config.mk 
+
+RESULTS='results/'
+find $SAMPLESHEET_DIR -maxdepth 1 -mindepth 1 -type f \
+	-name "SampleSheet*csv" -printf "%f\n" \
+		| sed -e 's/.csv/.ok/g' \
+		| sed -e "s|^|$RESULTS|g"

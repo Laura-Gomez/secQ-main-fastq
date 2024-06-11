@@ -1,0 +1,8 @@
+#!/bin/bash
+source ../config.mk
+
+## RESULTS=$PIPELINE_DIR'005d-Quality-PerSample/results/'
+ls 'data/' \
+	| awk  -F "_" '{print $1}' \
+	| sort | uniq \
+	| sed -e "s|^|results/|" -e 's/$/_report.html/'

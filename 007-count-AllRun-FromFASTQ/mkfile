@@ -1,0 +1,11 @@
+<../config.mk
+
+results/all.count:	data/
+	set -x
+	DIR_RESULTS="`dirname $target`"
+	mkdir -p $DIR_RESULTS
+	DIR_DATA="`dirname $prereq`"
+	FILES=`find $prereq -name *count`
+	awk -F '\t' '{total += $1} END {printf("%d\n", total)}' $FILES \
+		> $target'.build' \
+		&& mv $target'.build' $target 

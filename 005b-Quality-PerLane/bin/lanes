@@ -1,0 +1,14 @@
+#!/bin/bash
+source ../config.mk
+
+
+if [ "$PLATFORM_SEQ" = 'NextSeq2000' ]
+then
+	ls 'data/' \
+		| awk -F "_" '{print $1 "_" $5}' \
+		| sort | uniq
+else
+	ls 'data/' \
+                | awk -F "_" '{print $1 "_" $4}' \
+                | sort | uniq
+fi

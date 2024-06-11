@@ -1,0 +1,11 @@
+<../config.mk
+
+results/report_all_run.html:    data/
+	set -x
+	DIR_RESULTS=`dirname $target`
+	DIR_DATA=$prereq
+	mkdir -p $DIR_RESULTS
+        /home/lgomez/miniconda3/bin/multiqc \
+		--outdir $DIR_RESULTS \
+		--filename report_all_run.html \
+		$DIR_DATA  

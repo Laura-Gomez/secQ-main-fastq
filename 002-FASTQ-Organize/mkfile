@@ -1,0 +1,28 @@
+<../config.mk
+
+results/%projects.txt:     data/%projects.txt
+    set -x
+    DIR_TARGET=`dirname $target`
+    DIR_PREREQ=`dirname $prereq`
+    mkdir -p $DIR_TARGET
+    if test "$( wc -w < "$DIR_PREREQ/projects.txt")" -gt 0
+    then
+    	DIRS=$(cat $DIR_PREREQ/projects.txt | tr -d '\r' | sed -e "s#^#$DIR_TARGET/# ")
+    	mkdir -p $DIRS
+    	cp $prereq $DIR_TARGET
+    	PATH_RES=`pwd`'/results'
+    	for directory in $(find $DIR_TARGET \
+                             -maxdepth 1 \
+                             -mindepth 1 \
+                             -type d \
+				| sed -e s/results/data/g); do
+       		MOVE_DIR=`echo $directory | sed -e 's/data/results/g'`
+       		find -L $directory -type f -name "*fastq.gz" \
+			| xargs -I '{}' mv {} $MOVE_DIR
+     	done
+     else
+	echo "project1" > $target
+ 	mkdir -p $DIR_TARGET'/project1'
+	find -L data/ -type f -name "*fastq.gz" \
+                | xargs -I '{}' mv {} $DIR_TARGET'/project1'
+     fi

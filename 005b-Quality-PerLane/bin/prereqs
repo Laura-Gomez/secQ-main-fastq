@@ -1,0 +1,6 @@
+#!/bin/sh
+. ../config.mk
+
+bin/lanes \
+| xargs -I @ sh -c 'echo "results/@_report.html:	$(bin/which-fastqc-belong-lane @ | tr "\n" "\t" )"'
+

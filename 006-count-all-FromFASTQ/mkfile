@@ -1,0 +1,11 @@
+<../config.mk
+
+results/%.count:	data/%.fastq.gz
+	set -x
+	DIR_RESULTS="`dirname $target`"
+	mkdir -p $DIR_RESULTS
+	zcat $prereq \
+		| grep "@" \
+		| wc -l \
+			> $target'.build' && mv $target'.build' $target 
+

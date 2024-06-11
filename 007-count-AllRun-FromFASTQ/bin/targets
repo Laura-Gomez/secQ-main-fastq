@@ -1,0 +1,9 @@
+#!/bin/bash
+source ../config.mk
+
+RESULTS='results/all.count'
+lines=$(find 'data/' -name *count | wc -l)
+if [ $lines -ne 0 ]; then
+	echo "$RESULTS"
+fi
+

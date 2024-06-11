@@ -1,0 +1,7 @@
+#!/bin/bash
+
+##source ../config.mk
+
+find -L 'data/' -maxdepth 1  -mindepth 1 -type d \
+	| sed -e 's/data/results/g' \
+	| sed -e 's/$/-projects.txt/g'

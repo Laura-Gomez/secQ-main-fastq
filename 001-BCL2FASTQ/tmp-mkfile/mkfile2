@@ -1,0 +1,25 @@
+<../config.mk
+
+no-target:QV:
+    echo "$(pwd): nothing to be done."
+
+
+results/%.ok:	$SAMPLESHEET_DIR/%.csv	
+    set -x
+    TARGET_DIR=`echo $target | sed -e 's/.ok//g'`
+    bcl-convert --bcl-input-directory $SEQ_DATA_DIR \
+                --output-directory $TARGET_DIR'.build/' \
+		--bcl-num-parallel-tiles 4 \
+		--sample-sheet $prereq && touch $target
+    mv $TARGET_DIR'.build' $TARGET_DIR
+    COL_SAMPLE=`WORD="Sample_Project"; grep $WORD $prereq | tr "," "\n" | grep -n $WORD | cut -d ":" -f 1`
+    sed -n '/Sample/,/*/p' $prereq \
+        | cut -d ',' -f $COL_SAMPLE \
+        | awk '!/Sample_Project|^$/' \
+        | uniq \
+	| tr -d '\r' > \
+            $TARGET_DIR'/projects.txt' \
+
+clean:V:
+    bin/targets | xargs rm -rf
+    rm -rf data/* results

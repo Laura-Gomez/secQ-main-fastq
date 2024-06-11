@@ -1,0 +1,9 @@
+#!/bin/bash
+source ../config.mk
+
+#
+# This pipe preserves only PROJECT_NAME for downstream analysis.
+
+ls data/ \
+	| cut -f1 -d "_" \
+	| uniq

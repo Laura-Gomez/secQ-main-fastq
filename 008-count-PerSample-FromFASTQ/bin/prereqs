@@ -1,0 +1,8 @@
+#!/bin/sh
+. ../config.mk
+
+# Set up a dynamic mkfile for correctly updating merge targets.
+
+bin/samples \
+| xargs -I @ sh -c 'echo "results/@.count:	$(bin/which-count-belong-sample @ | tr "\n" "\t" )"'
+

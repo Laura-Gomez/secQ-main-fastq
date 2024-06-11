@@ -1,0 +1,11 @@
+#!/bin/bash
+source ../config.mk
+
+# Find all files in the form:
+#
+#
+# This pipe preserves only `SAMPLE_-NAME` for downstream analysis.
+
+ls 'data/' \
+	| awk  -F "_" '{print $1}' \
+	| sort | uniq

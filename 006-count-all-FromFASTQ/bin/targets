@@ -1,0 +1,7 @@
+#!/bin/bash
+source ../config.mk
+
+find 'data/' -name *fastq.gz \
+	| sed -e s/fastq.gz/count/g \
+	| sed -e s/data/results/g 
+

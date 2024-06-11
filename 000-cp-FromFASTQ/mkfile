@@ -1,0 +1,11 @@
+<../config.mk
+
+results/%.ok:	$FASTQ_DIR/%	
+    set -x
+    find ${FASTQ_DIR}/${RUN}/ -name '*.fastq.gz' -exec ln -vs "{}" results ';'
+    touch 'results/'${stem}'.ok'
+
+
+clean:V:
+    bin/targets | xargs rm -rf
+    rm -rf data/* results
